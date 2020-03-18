@@ -73,10 +73,8 @@ class DatabaseHelper {
     try {
       Database db = await database;
       await db.delete(favTable, where: "$colId = ?", whereArgs: [personId]);
-      print("Remove person $personId");
       return 1;
     } catch (err) {
-      print("REMOVE ERR");
       print(err);
       DatabaseException databaseException = err;
       return getDBError(databaseException);

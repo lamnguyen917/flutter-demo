@@ -65,7 +65,7 @@ class Person {
       colStatus: status,
       colPicture: picture
     };
-    if (id != null && id != "") {
+    if (id > 0) {
       map[colId] = id;
     }
     return map;

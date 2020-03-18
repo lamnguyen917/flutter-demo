@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import '../../services/DatabaseHelper.dart';
 import '../../view_models/PersonViewModel.dart';
 
 const double TOP_HEIGHT = 125;
@@ -7,22 +6,10 @@ const double PIC_SIZE = 150;
 const double PIC_TOP = 25;
 const double BUTTON_HEIGHT = 50;
 
-typedef void QueryCallback(int resultCode);
-
 class InfoPanel extends StatefulWidget {
   final PersonViewModel personVM;
 
   const InfoPanel({Key key, this.personVM}) : super(key: key);
-
-  void save(QueryCallback callback) async {
-    try {
-      DatabaseHelper helper = DatabaseHelper.instance;
-      var res = await helper.insert(personVM.person);
-      callback(res);
-    } catch (e) {
-      print(e);
-    }
-  }
 
   @override
   _InfoPanelState createState() => _InfoPanelState();
@@ -30,12 +17,12 @@ class InfoPanel extends StatefulWidget {
 
 enum InfoState { NAME, DOB, ADDRESS, PHONE, STATUS }
 
-class TabInfo {
+class _TabInfo {
   final InfoState state;
   final String headline;
   final IconData iconData;
 
-  TabInfo({this.state, this.headline, this.iconData});
+  _TabInfo({this.state, this.headline, this.iconData});
 }
 
 class _InfoPanelState extends State<InfoPanel> {
@@ -43,22 +30,22 @@ class _InfoPanelState extends State<InfoPanel> {
   String info = "";
   InfoState state = InfoState.NAME;
 
-  final List<TabInfo> tabsInfo = <TabInfo>[
-    TabInfo(
+  final List<_TabInfo> tabsInfo = <_TabInfo>[
+    _TabInfo(
         state: InfoState.NAME, headline: "My name is:", iconData: Icons.person),
-    TabInfo(
+    _TabInfo(
         state: InfoState.DOB,
         headline: "My DOB is:",
         iconData: Icons.calendar_today),
-    TabInfo(
+    _TabInfo(
         state: InfoState.ADDRESS,
         headline: "My address is:",
         iconData: Icons.map),
-    TabInfo(
+    _TabInfo(
         state: InfoState.PHONE,
         headline: "My phone number is:",
         iconData: Icons.phone),
-    TabInfo(
+    _TabInfo(
         state: InfoState.STATUS,
         headline: "My status is:",
         iconData: Icons.lock),

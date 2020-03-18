@@ -11,7 +11,7 @@ class FavoriteItem extends StatelessWidget {
     return Padding(
       padding: EdgeInsets.all(4),
       child: Container(
-        color: Colors.amber,
+        color: Colors.lightGreenAccent,
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
