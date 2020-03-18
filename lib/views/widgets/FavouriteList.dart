@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:pyco_test_flutter/views/widgets/FavoriteItem.dart';
 import '../../view_models/FavouriteViewModel.dart';
 
 class FavouriteList extends StatefulWidget {
@@ -23,48 +24,23 @@ class _FavouriteListState extends State<FavouriteList> {
           color: Colors.white,
           width: double.infinity,
           height: double.infinity,
-          // child: Carousel(
-          //   persons: provider.persons,
-          // ),
           child: provider.persons != null
               ? ListView.builder(
-                  padding: const EdgeInsets.all(8),
                   itemCount: provider.persons.length,
                   itemBuilder: (context, index) {
+                    var person = provider.persons[index];
                     return Container(
-                      height: 100,
-                      color: Colors.white,
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: <Widget>[
-                          Container(
-                            alignment: Alignment.center,
-                            width: 100,
-                            height: 100,
-                            decoration: BoxDecoration(
-                              image: new DecorationImage(
-                                image: new NetworkImage(
-                                    provider.persons[index].picture),
-                                fit: BoxFit.cover,
-                              ),
-                            ),
+                        height: 100,
+                        color: Colors.white,
+                        child: Dismissible(
+                          key: Key("${person.id}$index"),
+                          child: FavoriteItem(
+                            person: person,
                           ),
-                          Padding(
-                            padding: EdgeInsets.all(8),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: <Widget>[
-                                Text('Name: ${provider.persons[index].name}'),
-                                Text('DOB: ${provider.persons[index].dob}'),
-                                Text('Address: ${provider.persons[index].address}'),
-                                Text('Phone: ${provider.persons[index].phone}'),
-                              ],
-                            ),
-                          )
-                        ],
-                      ),
-                    );
+                          onDismissed: (direction) {
+                            provider.remove(person);
+                          },
+                        ));
                   },
                 )
               : Center(

@@ -5,9 +5,14 @@ import '../models/Person.dart';
 class FavouriteViewModel extends ChangeNotifier {
   List<Person> persons;
 
+  void remove(Person person) {
+    DatabaseHelper.instance.remove(person.id);
+    persons.remove(person);
+    notifyListeners();
+  }
+
   Future<void> fetch() async {
     final result = await DatabaseHelper.instance.queryFavouriteList();
-    print(result);
     this.persons = result.toList();
     notifyListeners();
   }

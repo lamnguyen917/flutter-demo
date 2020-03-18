@@ -69,6 +69,20 @@ class DatabaseHelper {
     }
   }
 
+  Future<int> remove(int personId) async {
+    try {
+      Database db = await database;
+      await db.delete(favTable, where: "$colId = ?", whereArgs: [personId]);
+      print("Remove person $personId");
+      return 1;
+    } catch (err) {
+      print("REMOVE ERR");
+      print(err);
+      DatabaseException databaseException = err;
+      return getDBError(databaseException);
+    }
+  }
+
   Future<List<Person>> queryFavouriteList() async {
     Database db = await database;
     List<Map> maps = await db.query(favTable);
