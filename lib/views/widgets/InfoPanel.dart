@@ -1,16 +1,29 @@
 import 'package:flutter/material.dart';
-import '../view_models/PersonViewModel.dart';
-// import '../models/Person.dart';
+import '../../services/DatabaseHelper.dart';
+import '../../view_models/PersonViewModel.dart';
 
 const double TOP_HEIGHT = 125;
 const double PIC_SIZE = 150;
 const double PIC_TOP = 25;
 const double BUTTON_HEIGHT = 50;
 
-class InfoPanel extends StatefulWidget {
-  final PersonViewModel person;
+typedef void QueryCallback(int resultCode);
 
-  InfoPanel({this.person});
+class InfoPanel extends StatefulWidget {
+  final PersonViewModel personVM;
+  
+  const InfoPanel({Key key, this.personVM}) : super(key: key);
+
+  void save(QueryCallback callback) async {
+    try {
+      DatabaseHelper helper = DatabaseHelper.instance;
+      var res = await helper.insert(personVM.person);
+      print(res);
+      callback(res);
+    } catch (e) {
+      print(e);
+    }
+  }
 
   @override
   _InfoPanelState createState() => _InfoPanelState();
@@ -43,17 +56,17 @@ class _InfoPanelState extends State<InfoPanel> {
   String getInfo(InfoState state) {
     switch (state) {
       case InfoState.NAME:
-        return widget.person.name;
+        return widget.personVM.name;
       case InfoState.DOB:
-        return widget.person.dob;
+        return widget.personVM.dob;
       case InfoState.ADDRESS:
-        return widget.person.address;
+        return widget.personVM.address;
       case InfoState.PHONE:
-        return widget.person.phone;
+        return widget.personVM.phone;
       case InfoState.STATUS:
-        return widget.person.status;
+        return widget.personVM.status;
       default:
-        return widget.person.name;
+        return widget.personVM.name;
     }
   }
 
@@ -200,7 +213,7 @@ class _InfoPanelState extends State<InfoPanel> {
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
                   image: new DecorationImage(
-                    image: new NetworkImage(widget.person.picture),
+                    image: new NetworkImage(widget.personVM.picture),
                     fit: BoxFit.cover,
                   ),
                 ),

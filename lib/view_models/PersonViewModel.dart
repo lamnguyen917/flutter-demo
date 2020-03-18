@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
-import '../models//Person.dart';
+import '../models/Person.dart';
 import '../services/PersonProvider.dart';
 
 class PersonViewModel extends ChangeNotifier {
   Person person = Person();
 
-  // PersonViewModel({this.person});
+  // PersonViewModel() {
+  //   fetchPerson();
+  // }
 
   String get name {
     return this.person.name;

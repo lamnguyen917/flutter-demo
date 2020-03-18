@@ -1,10 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import 'package:pyco_test_flutter/view_models/PersonViewModel.dart';
-// import 'package:pyco_test_flutter/views/Carousel.dart';
-import '../views/ProfilePage.dart';
+import './pages/FavouritePage.dart';
+import './pages/ProfilePage.dart';
 
-class Home extends StatelessWidget {
+class Home extends StatefulWidget {
+  @override
+  _HomeState createState() => _HomeState();
+}
+
+class _HomeState extends State<Home> {
+  bool showFavourite = false;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -24,26 +28,43 @@ class Home extends StatelessWidget {
               )
             ],
           ),
+          showFavourite ? FavouritePage() : ProfilePage(),
           // Carousel(),
-          ChangeNotifierProvider(
-            create: (context) => PersonViewModel(),
-            child: ProfilePage(),
-          ),
+          // ChangeNotifierProvider(
+          //   create: (context) => PersonViewModel(),
+          //   child: showFavourite ? FavouritePage() : ProfilePage(),
+          // ),
         ],
       ),
       bottomNavigationBar: BottomAppBar(
-          child: Row(
-        children: <Widget>[
-          Tab(
-            icon: Icon(Icons.home),
-            text: "Home",
-          ),
-          Tab(
-            icon: Icon(Icons.home),
-            text: "Home",
-          ),
-        ],
-      )),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            FlatButton(
+              child: Icon(
+                Icons.info,
+                color: showFavourite ? Colors.grey : Colors.green,
+              ),
+              onPressed: () {
+                setState(() {
+                  showFavourite = false;
+                });
+              },
+            ),
+            FlatButton(
+              child: Icon(
+                Icons.favorite,
+                color: showFavourite ? Colors.green : Colors.grey,
+              ),
+              onPressed: () {
+                setState(() {
+                  showFavourite = true;
+                });
+              },
+            ),
+          ],
+        ),
+      ),
     );
   }
 }
