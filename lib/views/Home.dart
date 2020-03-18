@@ -28,12 +28,15 @@ class _HomeState extends State<Home> {
               )
             ],
           ),
-          showFavourite ? FavouritePage() : ProfilePage(),
-          // Carousel(),
-          // ChangeNotifierProvider(
-          //   create: (context) => PersonViewModel(),
-          //   child: showFavourite ? FavouritePage() : ProfilePage(),
-          // ),
+          Visibility(
+            child: FavouritePage(),
+            visible: showFavourite,
+          ),
+          Visibility(
+            child: ProfilePage(),
+            visible: !showFavourite,
+          ),
+          // showFavourite ? FavouritePage() : ProfilePage(),
         ],
       ),
       bottomNavigationBar: BottomAppBar(

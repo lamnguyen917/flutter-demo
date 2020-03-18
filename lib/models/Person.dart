@@ -1,8 +1,8 @@
 import 'package:pyco_test_flutter/services/DatabaseHelper.dart';
-import 'package:pyco_test_flutter/utils/DateUtils.dart';
+// import 'package:pyco_test_flutter/utils/DateUtils.dart';
 
 class Person {
-  String id;
+  int id;
   String name;
   String dob;
   String address;
@@ -11,7 +11,7 @@ class Person {
   String picture;
 
   Person({
-    this.id = "",
+    this.id = 0,
     this.name = "",
     this.dob = "",
     this.address = "",
@@ -42,14 +42,17 @@ class Person {
     final Map<String, dynamic> nameObj = data["name"];
     final String fullName =
         "${nameObj["title"]} ${nameObj["first"]} ${nameObj["last"]}";
+
     return Person(
-      id: data["registered"],
+      id: int.parse(data["id"]["value"]),
       name: fullName,
-      dob: DateUtils.fromTimestamp(data["dob"]),
+      // dob: DateUtils.fromTimestamp(data["dob"]),
+      dob: data["dob"],
       address: data["location"]["street"],
       phone: data["cell"],
       status: data["registered"],
-      picture: data["picture"],
+      // picture: data["picture"],
+      picture: data["picture"]["large"],
     );
   }
 
@@ -69,7 +72,7 @@ class Person {
   }
 
   Person.fromMap(Map<String, dynamic> map) {
-    id = map[colId].toString();
+    id = map[colId];
     name = map[colName];
     dob = map[colDob];
     address = map[colAddress];

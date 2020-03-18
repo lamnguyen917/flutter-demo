@@ -11,14 +11,13 @@ typedef void QueryCallback(int resultCode);
 
 class InfoPanel extends StatefulWidget {
   final PersonViewModel personVM;
-  
+
   const InfoPanel({Key key, this.personVM}) : super(key: key);
 
   void save(QueryCallback callback) async {
     try {
       DatabaseHelper helper = DatabaseHelper.instance;
       var res = await helper.insert(personVM.person);
-      print(res);
       callback(res);
     } catch (e) {
       print(e);
@@ -31,26 +30,42 @@ class InfoPanel extends StatefulWidget {
 
 enum InfoState { NAME, DOB, ADDRESS, PHONE, STATUS }
 
+class TabInfo {
+  final InfoState state;
+  final String headline;
+  final IconData iconData;
+
+  TabInfo({this.state, this.headline, this.iconData});
+}
+
 class _InfoPanelState extends State<InfoPanel> {
   String title = "";
   String info = "";
   InfoState state = InfoState.NAME;
 
+  final List<TabInfo> tabsInfo = <TabInfo>[
+    TabInfo(
+        state: InfoState.NAME, headline: "My name is:", iconData: Icons.person),
+    TabInfo(
+        state: InfoState.DOB,
+        headline: "My DOB is:",
+        iconData: Icons.calendar_today),
+    TabInfo(
+        state: InfoState.ADDRESS,
+        headline: "My address is:",
+        iconData: Icons.map),
+    TabInfo(
+        state: InfoState.PHONE,
+        headline: "My phone number is:",
+        iconData: Icons.phone),
+    TabInfo(
+        state: InfoState.STATUS,
+        headline: "My status is:",
+        iconData: Icons.lock),
+  ];
+
   String getTitle(InfoState state) {
-    switch (state) {
-      case InfoState.NAME:
-        return "My name is:";
-      case InfoState.DOB:
-        return "My DOB is:";
-      case InfoState.ADDRESS:
-        return "My address is:";
-      case InfoState.PHONE:
-        return "My phone number is:";
-      case InfoState.STATUS:
-        return "My status is:";
-      default:
-        return "My name is:";
-    }
+    return tabsInfo.firstWhere((element) => (element.state == state)).headline;
   }
 
   String getInfo(InfoState state) {
@@ -72,6 +87,18 @@ class _InfoPanelState extends State<InfoPanel> {
 
   @override
   Widget build(BuildContext context) {
+    var tabs = new List.generate(tabsInfo.length, (index) {
+      var e = tabsInfo[index];
+      return FlatButton(
+          onPressed: () {
+            setState(() {
+              state = e.state;
+            });
+          },
+          child: Icon(e.iconData,
+              color: state == e.state ? Colors.green : Colors.grey));
+    });
+
     return Stack(
       alignment: Alignment.center,
       children: <Widget>[
@@ -113,73 +140,7 @@ class _InfoPanelState extends State<InfoPanel> {
                     buttonHeight: BUTTON_HEIGHT,
                     alignment: MainAxisAlignment.spaceAround,
                     buttonMinWidth: BUTTON_HEIGHT,
-                    children: <Widget>[
-                      FlatButton(
-                        child: Icon(
-                          Icons.person,
-                          color: this.state == InfoState.NAME
-                              ? Colors.green
-                              : Colors.grey,
-                        ),
-                        onPressed: () {
-                          setState(() {
-                            this.state = InfoState.NAME;
-                          });
-                        },
-                      ),
-                      FlatButton(
-                        child: Icon(
-                          Icons.calendar_today,
-                          color: this.state == InfoState.DOB
-                              ? Colors.green
-                              : Colors.grey,
-                        ),
-                        onPressed: () {
-                          setState(() {
-                            this.state = InfoState.DOB;
-                          });
-                        },
-                      ),
-                      FlatButton(
-                        child: Icon(
-                          Icons.map,
-                          color: this.state == InfoState.ADDRESS
-                              ? Colors.green
-                              : Colors.grey,
-                        ),
-                        onPressed: () {
-                          setState(() {
-                            this.state = InfoState.ADDRESS;
-                          });
-                        },
-                      ),
-                      FlatButton(
-                        child: Icon(
-                          Icons.phone,
-                          color: this.state == InfoState.PHONE
-                              ? Colors.green
-                              : Colors.grey,
-                        ),
-                        onPressed: () {
-                          setState(() {
-                            this.state = InfoState.PHONE;
-                          });
-                        },
-                      ),
-                      FlatButton(
-                        child: Icon(
-                          Icons.lock,
-                          color: this.state == InfoState.STATUS
-                              ? Colors.green
-                              : Colors.grey,
-                        ),
-                        onPressed: () {
-                          setState(() {
-                            this.state = InfoState.STATUS;
-                          });
-                        },
-                      ),
-                    ],
+                    children: tabs,
                   )
                 ],
               ),
@@ -201,8 +162,6 @@ class _InfoPanelState extends State<InfoPanel> {
                 color: Colors.grey,
                 style: BorderStyle.solid,
               ),
-              // shape: BoxShape.circle,
-              // color: Colors.white,
             ),
             child: Padding(
               padding: EdgeInsets.all(5),
@@ -212,10 +171,12 @@ class _InfoPanelState extends State<InfoPanel> {
                 height: 100,
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
-                  image: new DecorationImage(
-                    image: new NetworkImage(widget.personVM.picture),
-                    fit: BoxFit.cover,
-                  ),
+                  image: widget.personVM.picture.length > 0
+                      ? DecorationImage(
+                          image: new NetworkImage(widget.personVM.picture),
+                          fit: BoxFit.cover,
+                        )
+                      : null,
                 ),
               ),
             ),

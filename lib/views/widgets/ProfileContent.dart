@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:pyco_test_flutter/services/DatabaseHelper.dart';
 import 'InfoPanel.dart';
 import '../../view_models/PersonViewModel.dart';
 
@@ -34,8 +35,13 @@ class _ProfileContentState extends State<ProfileContent> {
           double dx = details.velocity.pixelsPerSecond.dx;
           if (dx > 500) {
             infoPanel.save((res) {
+              var message = "Profile $res is added to favourite list!";
+              if (res == DB_ERROR_UNIQUE)
+                message = "This person is already in the favorite list!";
+              else if (res < 0)
+                message = "Unknown error occurred!";
               Scaffold.of(context).showSnackBar(SnackBar(
-                content: Text("Profile $res is added to favourite list!"),
+                content: Text(message),
               ));
             });
           } else if (dx < -500) {

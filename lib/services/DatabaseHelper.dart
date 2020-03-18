@@ -13,6 +13,16 @@ final String colPhone = "phone";
 final String colStatus = "status";
 final String colPicture = "picture";
 
+const DB_ERROR_UNKOWN = 0;
+const DB_ERROR_UNIQUE = -1;
+const DB_ERROR_SYNTAX = -2;
+
+int getDBError(DatabaseException e) {
+  if (e.isUniqueConstraintError()) return DB_ERROR_UNIQUE;
+  if (e.isSyntaxError()) return DB_ERROR_SYNTAX;
+  return DB_ERROR_UNKOWN;
+}
+
 class DatabaseHelper {
   static final _dbName = "favourite.db";
   static final _dbVersion = 1;
@@ -49,9 +59,14 @@ class DatabaseHelper {
   }
 
   Future<int> insert(Person person) async {
-    Database db = await database;
-    int id = await db.insert(favTable, person.toMap());
-    return id;
+    try {
+      Database db = await database;
+      int id = await db.insert(favTable, person.toMap());
+      return id;
+    } catch (err) {
+      DatabaseException databaseException = err;
+      return getDBError(databaseException);
+    }
   }
 
   Future<List<Person>> queryFavouriteList() async {
